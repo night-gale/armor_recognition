@@ -15,7 +15,7 @@
 #define Min(a,b) (((a) > (b)) ? (b) : (a))
 #define Abs(a) ((a > 0)? (a): (-a))
 #define square(a) ((a) * (a))
-#define DELTA_ANGLE_THRESHOLD 10
+#define DELTA_ANGLE_THRESHOLD 25
 #define STANDARD_LENGTH_WIDTH_RATIO 2.26 
 
 
