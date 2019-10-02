@@ -5,17 +5,21 @@
 
 using namespace cv;
 
-int main(void) {
+int main(void)
+{
     VideoCapture cap;
     cap.open("./video/red.mp4");
-    if(!cap.isOpened()) {
+    if (!cap.isOpened())
+    {
         printf("no video captured");
         return -1;
     }
-    while(waitKey(30) != 'q') {
+    while (waitKey(50) != 'q')
+    {
         Mat test;
         cap >> test;
-        if(test.empty()) {
+        if (test.empty())
+        {
             printf("no frame remained");
             break;
         }
