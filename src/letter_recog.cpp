@@ -1,6 +1,6 @@
 #include <letter_recog.hpp>
 
-static void help()
+void help()
 {
     printf("\nThe sample demonstrates how to train Random Trees classifier\n"
     "(or Boosting classifier, or MLP, or Knearest, or Nbayes, or Support Vector Machines - see main()) using the provided dataset.\n"
@@ -26,7 +26,7 @@ static void help()
 }
 
 // This function reads data and responses from the file <filename>
-static bool
+bool
 read_num_class_data( const string& filename, int var_count,
                      Mat* _data, Mat* _responses )
 {
@@ -73,7 +73,7 @@ read_num_class_data( const string& filename, int var_count,
 }
 
 template<typename T>
-static Ptr<T> load_classifier(const string& filename_to_load)
+Ptr<T> load_classifier(const string& filename_to_load)
 {
     // load classifier from the specified file
     Ptr<T> model = StatModel::load<T>( filename_to_load );
@@ -85,7 +85,7 @@ static Ptr<T> load_classifier(const string& filename_to_load)
     return model;
 }
 
-static Ptr<TrainData>
+Ptr<TrainData>
 prepare_train_data(const Mat& data, const Mat& responses, int ntrain_samples)
 {
     Mat sample_idx = Mat::zeros( 1, data.rows, CV_8U );
@@ -106,7 +106,7 @@ inline TermCriteria TC(int iters, double eps)
     return TermCriteria(TermCriteria::MAX_ITER + (eps > 0 ? TermCriteria::EPS : 0), iters, eps);
 }
 
-static void test_and_save_classifier(const Ptr<StatModel>& model,
+void test_and_save_classifier(const Ptr<StatModel>& model,
                                      const Mat& data, const Mat& responses,
                                      int ntrain_samples, int rdelta,
                                      const string& filename_to_save)
@@ -141,14 +141,14 @@ static void test_and_save_classifier(const Ptr<StatModel>& model,
 }
 
 
-static bool
+bool
 build_rtrees_classifier( const string& data_filename,
                          const string& filename_to_save,
                          const string& filename_to_load )
 {
     Mat data;
     Mat responses;
-    bool ok = read_num_class_data( data_filename, 16, &data, &responses );
+    bool ok = read_num_class_data( data_filename, 64, &data, &responses );
     if( !ok )
         return ok;
 
@@ -207,7 +207,7 @@ build_rtrees_classifier( const string& data_filename,
 }
 
 
-static bool
+bool
 build_boost_classifier( const string& data_filename,
                         const string& filename_to_save,
                         const string& filename_to_load )
@@ -332,7 +332,7 @@ build_boost_classifier( const string& data_filename,
 }
 
 
-static bool
+bool
 build_mlp_classifier( const string& data_filename,
                       const string& filename_to_save,
                       const string& filename_to_load )
@@ -412,7 +412,7 @@ build_mlp_classifier( const string& data_filename,
     return true;
 }
 
-static bool
+bool
 build_knearest_classifier( const string& data_filename, int K )
 {
     Mat data;
@@ -438,7 +438,7 @@ build_knearest_classifier( const string& data_filename, int K )
     return true;
 }
 
-static bool
+bool
 build_nbayes_classifier( const string& data_filename )
 {
     Mat data;
@@ -463,7 +463,7 @@ build_nbayes_classifier( const string& data_filename )
     return true;
 }
 
-static bool
+bool
 build_svm_classifier( const string& data_filename,
                       const string& filename_to_save,
                       const string& filename_to_load )

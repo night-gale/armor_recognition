@@ -10,46 +10,37 @@ using namespace std;
 
 Mat pre_processing(const Mat &src);
 void write(const Mat toWrite, int tag);
-void train_Rtree();
+void train_Rtree(const string& data_filename, const string& data_filename_to_save);
+cv::Mat decrease_to_size(Mat& src, int size);
 
 int main(void) {
     char filename[14] = "./video/0.mp4";
+    string data_filename = "./trainData/database.dat";
+    string data_filename_to_save = "./model/numberRecog.model";
+
     for(int counter = 1; counter <= 8; counter++) {
         filename[8] = counter + 48;
         VideoCapture cap(filename);
         Mat src;
         Mat dst;
-        Mat partial;
         char key;
+        namedWindow("test", WINDOW_FREERATIO);
 
         while(true) {
             key = waitKey(0);
             cap >> src;
-            if(src.empty() | key == 27) {
+            if(src.empty() || key == 27) {
                 break;
             }
 
             dst = pre_processing(src);
-            float temp = log2f(min(dst.rows, dst.cols) / 8);
-            int temp1 = temp;
-            float temp2 = temp1 + 1 - temp;
-            int newSize = 8 * powf(2, temp1);
-            //decrease the size of the photo to 8 x 8
-            partial = Mat(dst, Rect2i(Point2i((dst.cols - newSize) / 2, 
-                                             (dst.rows - newSize) / 2), 
-                                             Point2i((dst.cols + newSize) / 2, 
-                                             (dst.rows + newSize) / 2)));
+            dst = decrease_to_size(dst, 8);
 
-            for(int i = 0; i < temp1; i++) {
-                pyrDown(partial, partial, Size2i(partial.cols / 2, partial.rows / 2));
-            }
-            threshold(partial, partial, 130, 255, THRESH_BINARY_INV);
-            namedWindow("test", WINDOW_FREERATIO);
-            imshow("test", partial);
+            imshow("test", dst);
             key = waitKey(0);
 
             if(key != 'd') {
-                write(partial, counter);
+                write(dst, counter);
             }
         }
     }
@@ -85,28 +76,46 @@ cv::Mat pre_processing(const Mat &src) {
         return a1.size.area() < a2.size.area();});
 
     rectangle(dst, rotated_rect[0].boundingRect(), Scalar(255, 0, 0), 5);
-    imshow("threshold", dst);
-    waitKey(0);
+    // imshow("threshold", dst);
+    // waitKey(0);
     return dst(rotated_rect[0].boundingRect());
+}
+
+cv::Mat decrease_to_size(Mat& src, int size) {
+    float temp = log2f(min(src.rows, src.cols) / size);
+    int temp1 = temp;
+    float temp2 = temp1 + 1 - temp;
+    int newSize = size * powf(2, temp1);
+    //decrease the size of the photo to size x size
+    Mat partial = Mat(src, Rect2i(Point2i((src.cols - newSize) / 2, 
+                                        (src.rows - newSize) / 2), 
+                                        Point2i((src.cols + newSize) / 2, 
+                                        (src.rows + newSize) / 2)));
+
+    for(int i = 0; i < temp1; i++) {
+        pyrDown(partial, partial, Size2i(partial.cols / 2, partial.rows / 2));
+    }
+    threshold(partial, partial, 130, 255, THRESH_BINARY_INV);
+    return partial;
 }
 
 void write(const Mat toWrite, int tag) {
     std::ofstream outDataBase;
     std::ofstream outResponse;
     outDataBase.open("./trainData/database.dat");
-    outResponse.open("./trainData/response.dat");
+    outDataBase << tag <<' ';
     for(size_t i = 0; i < toWrite.cols; i++) {
         for(size_t j = 0; j < toWrite.rows; j++) {
-            outDataBase << (int)toWrite.data[i*toWrite.cols + j] / 255 << " ";
-            std::cout << (int)(toWrite.data[i*toWrite.cols + j]) / 255 << " ";
+            outDataBase << (int)toWrite.data[i*toWrite.cols + j] / 255 << ' ';
+            std::cout << (int)(toWrite.data[i*toWrite.cols + j]) / 255 << ' ';
         }
     }
     outDataBase << std::endl;
-    outResponse << tag <<" "<<std::endl;
+    
 }
 
-void train_rTree() {
-    
+void train_rTree(const string& data_filename, const string& data_filename_to_save) {
+    build_rtrees_classifier(data_filename, data_filename_to_save, NULL);
 }
 
 // int main(void) {
