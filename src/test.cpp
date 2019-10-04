@@ -3,6 +3,7 @@
 #include <fstream>
 #include <opencv2/videoio.hpp>
 #include <opencv2/video.hpp>
+#include <letter_recog.hpp>
 
 using namespace cv;
 using namespace std;
@@ -13,7 +14,9 @@ void write(const Mat toWrite, int tag);
 int main(void) {
     Mat src = imread("./img/numbers/five1.jpg");
     Mat dst = pre_processing(src);
-    int temp1 = log2f(min(dst.rows, dst.cols) / 8);
+    float temp = log2f(min(dst.rows, dst.cols) / 8);
+    int temp1 = temp;
+    float temp2 = temp1 + 1 - temp;
     int newSize = 8 * powf(2, temp1);
     namedWindow("test", WINDOW_FREERATIO);
 

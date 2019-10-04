@@ -1,13 +1,4 @@
-#include "opencv2/core.hpp"
-#include "opencv2/ml.hpp"
-
-#include <cstdio>
-#include <vector>
-#include <iostream>
-
-using namespace std;
-using namespace cv;
-using namespace cv::ml;
+#include <letter_recog.hpp>
 
 static void help()
 {
