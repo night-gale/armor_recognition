@@ -155,7 +155,7 @@ build_rtrees_classifier( const string& data_filename,
     Ptr<RTrees> model;
 
     int nsamples_all = data.rows;
-    int ntrain_samples = (int)(nsamples_all*0.8);
+    int ntrain_samples = (int)(nsamples_all*0.50);
 
     // Create or load Random Trees classifier
     if( !filename_to_load.empty() )
@@ -185,6 +185,8 @@ build_rtrees_classifier( const string& data_filename,
         sort(_data.begin(), _data.end(), [](vector<Mat> &a1, vector<Mat> &a2) {
             return rand() > RAND_MAX / 2;
         });
+        data = Mat();
+        responses = Mat();
 
         
         for(int i = 0; i < _data.size(); i++) {
@@ -195,7 +197,7 @@ build_rtrees_classifier( const string& data_filename,
         Ptr<TrainData> tdata = prepare_train_data(data, responses, ntrain_samples);
         model = RTrees::create();
         model->setMaxDepth(10);
-        model->setMinSampleCount(10);
+        model->setMinSampleCount(5);
         model->setRegressionAccuracy(0);
         model->setUseSurrogates(false);
         model->setMaxCategories(15);
@@ -235,7 +237,7 @@ build_boost_classifier( const string& data_filename,
     Mat responses;
     Mat weak_responses;
 
-    bool ok = read_num_class_data( data_filename, 16, &data, &responses );
+    bool ok = read_num_class_data( data_filename, 256, &data, &responses );
     if( !ok )
         return ok;
 
