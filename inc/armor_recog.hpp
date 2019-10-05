@@ -29,6 +29,7 @@ typedef struct {
     float distance;
     float barLen; // average length of light bar
     Point3d position;
+    Point3d* positions;
     Point3d velocity;
 }Armor;
 
