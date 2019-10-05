@@ -50,7 +50,7 @@ read_num_class_data( const string& filename, int var_count,
     for(;;)
     {
         char* ptr;
-        if( !fgets( buf, M, f ) || !strchr( buf, ',' ) )
+        if( !fgets( buf, M, f ))
             break;
         responses.push_back((int)buf[0]);
         ptr = buf+2;
@@ -148,7 +148,7 @@ build_rtrees_classifier( const string& data_filename,
 {
     Mat data;
     Mat responses;
-    bool ok = read_num_class_data( data_filename, 64, &data, &responses );
+    bool ok = read_num_class_data( data_filename, 256, &data, &responses );
     if( !ok )
         return ok;
 
@@ -173,7 +173,25 @@ build_rtrees_classifier( const string& data_filename,
 //                   double regressionAccuracy, bool useSurrogates,
 //                   int maxCategories, const Mat& priors,
 //                   bool calcVarImportance, int nactiveVars,
-//                   TermCriteria termCrit );
+//                   TermCriteria termCrit )
+        vector<vector<Mat>> _data;
+        for(int i = 0; i < data.rows; i++) {
+            vector<Mat> temp;
+            temp.push_back(data.row(i));
+            temp.push_back(responses.row(i));
+            _data.push_back(temp);
+        }
+        srand(time(NULL));
+        sort(_data.begin(), _data.end(), [](vector<Mat> &a1, vector<Mat> &a2) {
+            return rand() > RAND_MAX / 2;
+        });
+
+        
+        for(int i = 0; i < _data.size(); i++) {
+            data.push_back(_data[i][0]);
+            responses.push_back(_data[i][1]);
+        }
+
         Ptr<TrainData> tdata = prepare_train_data(data, responses, ntrain_samples);
         model = RTrees::create();
         model->setMaxDepth(10);
