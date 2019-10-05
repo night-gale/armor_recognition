@@ -10,40 +10,28 @@ using namespace std;
 
 Mat pre_processing(const Mat &src);
 void write(const Mat toWrite, int tag);
-void train_Rtree(const string& data_filename, const string& data_filename_to_save);
+void train_Rtree(char* filename_dataset, int number_of_video, const string& data_filename, const string& data_filename_to_save);
 cv::Mat decrease_to_size(Mat& src, int size);
 
 int main(void) {
     char filename[14] = "./video/0.mp4";
     string data_filename = "./trainData/database.dat";
-    string data_filename_to_save = "./model/numberRecog.model";
-
-    for(int counter = 1; counter <= 8; counter++) {
-        filename[8] = counter + 48;
-        VideoCapture cap(filename);
-        Mat src;
-        Mat dst;
-        char key;
-        namedWindow("test", WINDOW_FREERATIO);
-
-        while(true) {
-            key = waitKey(0);
-            cap >> src;
-            if(src.empty() || key == 27) {
-                break;
-            }
-
-            dst = pre_processing(src);
-            dst = decrease_to_size(dst, 8);
-
-            imshow("test", dst);
-            key = waitKey(0);
-
-            if(key != 'd') {
-                write(dst, counter);
-            }
+    string data_filename_to_save = "./model/numberRecog.model"; 
+    Mat src = imread("./img/numbers/five1.jpg");
+    Mat dst = pre_processing(src);
+    dst = decrease_to_size(dst, 8);
+    Mat test_data;
+    float r;
+    for(int i = 0; i < dst.cols; i++) {
+        for(int j = 0; j < dst.rows; j++) {
+            test_data.push_back((int)dst.data[i*dst.cols + j] / 255);
         }
     }
+
+    Ptr<RTrees> model = load_classifier<RTrees>(data_filename_to_save);
+
+    r = model->predict(test_data);
+    printf("%f", r);
 }
 
 
@@ -114,7 +102,33 @@ void write(const Mat toWrite, int tag) {
     
 }
 
-void train_rTree(const string& data_filename, const string& data_filename_to_save) {
+void train_rTree(char* filename_dataset, int number_of_video, const string& data_filename, const string& data_filename_to_save) {
+        for(int counter = 1; counter <= number_of_video; counter++) {
+        filename_dataset[number_of_video] = counter + 48;
+        VideoCapture cap(filename_dataset);
+        Mat src;
+        Mat dst;
+        char key;
+        namedWindow("test", WINDOW_FREERATIO);
+
+        while(true) {
+            key = waitKey(0);
+            cap >> src;
+            if(src.empty() || key == 27) {
+                break;
+            }
+
+            dst = pre_processing(src);
+            dst = decrease_to_size(dst, 8);
+
+            imshow("test", dst);
+            key = waitKey(0);
+
+            if(key != 'd') {
+                write(dst, counter);
+            }
+        }
+    }
     build_rtrees_classifier(data_filename, data_filename_to_save, NULL);
 }
 
