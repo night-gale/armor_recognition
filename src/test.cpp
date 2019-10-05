@@ -13,36 +13,6 @@ void write(ofstream &outDataBase, const Mat toWrite, int tag);
 void train_Rtree(char *filename_video, int number_of_video, const string &data_filename, const string &data_filename_to_save);
 cv::Mat decrease_to_size(Mat &src, int size);
 
-<<<<<<< HEAD
-int main(void)
-{
-    char filename_video[14] = "./video/0.mp4";
-    string data_filename = "./trainData/database.dat";
-    string data_filename_to_save = "./model/numberRecog.model";
-    // train_Rtree(filename_video, 8, data_filename, data_filename_to_save);
-    // build_rtrees_classifier(data_filename, data_filename_to_save, string());
-
-    Mat src = imread("./img/numbers/four1.jpg");
-    Mat dst = pre_processing(src);
-    dst = decrease_to_size(dst, 16);
-    Mat test_data(1, 256, CV_32F);
-    namedWindow("dst", WINDOW_FREERATIO);
-    imshow("dst", dst);
-    waitKey(0);
-    float r;
-    for (int i = 0; i < dst.cols; i++)
-    {
-        for (int j = 0; j < dst.rows; j++)
-        {
-            test_data.at<float>(i * dst.cols + j) = (int)dst.data[i * dst.cols + j];
-        }
-    }
-    Ptr<RTrees> model = load_classifier<RTrees>(data_filename_to_save);
-
-    r = model->predict(test_data);
-    cout << r - 48 << endl;
-}
-=======
 // int main(void)
 // {
 //     char filename_video[14] = "./video/0.mp4";
@@ -71,7 +41,6 @@ int main(void)
 //     r = model->predict(test_data);
 //     cout << r - 48 << endl;
 // }
->>>>>>> 0a573282d2821ca2d743751416d0d809b5033d6f
 
 cv::Mat pre_processing(const Mat &src)
 {
