@@ -167,6 +167,7 @@ Armor Armor_recog::edge_to_armor(cv::RotatedRect &a, cv::RotatedRect &b, double 
     Armor armor;
     armor.bound = RotatedRect(center, Size2f(width, height), angle * 180 / CV_PI);
     armor.center = center;
+    armor.barLen = (lengthA + lengthB) / 2;
     armor.distance = -1;
     return armor;
 }

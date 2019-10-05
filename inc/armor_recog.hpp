@@ -16,7 +16,9 @@
 #define Abs(a) ((a > 0)? (a): (-a))
 #define square(a) ((a) * (a))
 #define DELTA_ANGLE_THRESHOLD 25
-#define STANDARD_LENGTH_WIDTH_RATIO 2.26 
+#define STANDARD_LENGTH_WIDTH_RATIO 2.26f
+#define BAR_REAL_LENGTH 55.31f // the real length of light bar, unit: mm
+
 
 using namespace cv;
 using namespace std;
@@ -25,6 +27,9 @@ typedef struct {
     cv::RotatedRect bound;
     cv::Point2f center;
     float distance;
+    float barLen; // average length of light bar
+    Point3d position;
+    Point3d velocity;
 }Armor;
 
 class Armor_recog {
@@ -34,7 +39,7 @@ class Armor_recog {
         int threshold_color;
         int threshold_brightness;
         int enemyColor;
-        int sentry_mode;
+        int sentry_mode; // 
         std::vector<Armor> armor_detected;
         Armor to_aim;
         cv::Mat current_frame;
